@@ -6,7 +6,7 @@ export function setSuiteStatus(suite, status, message = null) {
     type: TEST_SET_SUITE_STATUS,
     suite,
     status,
-
+    message,
   };
 }
 

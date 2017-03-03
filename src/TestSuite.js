@@ -114,7 +114,7 @@ class BaseTest {
         const errors = results.filter(Boolean);
 
         if (errors.length) {
-          dispatch(setSuiteStatus(this.id, ERR, `${errors.length} test${errors.length > 1 ? 's' : ''} had error(s).`));
+          dispatch(setSuiteStatus(this.id, ERR, `${errors.length} test${errors.length > 1 ? 's' : ''} has error(s).`));
         } else {
           dispatch(setSuiteStatus(this.id, OK));
         }

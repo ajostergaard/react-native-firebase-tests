@@ -6,6 +6,10 @@ const tests = {
   storage,
 };
 
+/**
+ * Return inital state for the tests to provide to Redux
+ * @returns {{suites: {}, descriptions: {}}}
+ */
 export function initialState() {
   const suites = {};
   const descriptions = {};
@@ -41,19 +45,34 @@ export function initialState() {
   });
 
   return {
-    tests: {
-      suites,
-      descriptions,
-    },
-  }
+    suites,
+    descriptions,
+  };
 }
 
-export function run(suite) {
+/**
+ * Provide a redux store to the test suites
+ * @param store
+ */
+export function setupSuites(store) {
+  Object.values(tests).forEach((test) => {
+    test.store = store;
+  });
+}
+
+/**
+ * Run all tests in a suite
+ * @param suite
+ */
+export function runSuite(suite) {
   tests[suite].run();
 }
 
-export default function setupTests(store) {
-  Object.values(tests).forEach((test) => {
-    test.store = store;
+/**
+ * Run all tests
+ */
+export function runAllSuites() {
+  Object.keys(tests).forEach((key) => {
+    runSuite(key);
   });
 }

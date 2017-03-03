@@ -43,10 +43,25 @@ class Suite extends React.Component {
     navigate('Test', { test });
   }
 
+  renderError() {
+    const { suite } = this.props;
+  console.log(suite)
+    return (
+      <View style={[styles.banner, styles.errorBanner]}>
+        <Text
+          numberOfLines={1}
+          style={styles.bannerText}
+        >
+          {suite.message}
+        </Text>
+      </View>
+    );
+  }
+
   renderInProgress() {
     return (
-      <View style={styles.inProgress}>
-        <Text style={styles.inProgressText}>Tests in progress.</Text>
+      <View style={[styles.banner, styles.inProgress]}>
+        <Text style={styles.bannerText}>Tests in progress.</Text>
       </View>
     );
   }
@@ -111,6 +126,7 @@ class Suite extends React.Component {
     return (
       <View style={styles.container}>
         {suite.status === 'started' && this.renderInProgress()}
+        {suite.status === 'error' && this.renderError()}
         <ListView
           dataSource={this.state.dataBlob}
           renderSectionHeader={(...args) => this.renderHeader(...args)}
@@ -127,13 +143,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  inProgress: {
-    backgroundColor: '#FFC107',
+  banner: {
     alignItems: 'center',
     elevation: 3,
   },
-  inProgressText: {
+  bannerText: {
     color: '#ffffff',
+  },
+  inProgress: {
+    backgroundColor: '#FFC107',
+  },
+  errorBanner: {
+    backgroundColor: '#f44336',
   },
   header: {
     elevation: 3,

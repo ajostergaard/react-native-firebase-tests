@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 
 import CoreContainer from '~/containers/CoreContainer';
 import setupStore from '~/store/setup';
-import setupTests, { initialState } from '~/tests';
+import { setupSuites } from '~/tests';
 
 global.Promise = require('bluebird');
 
@@ -36,8 +36,8 @@ function bootstrap() {
     state: State;
 
     componentDidMount() {
-      setupStore(initialState(), (store) => {
-        setupTests(store);
+      setupStore((store) => {
+        setupSuites(store);
         this.setState({
           store,
           loading: false,

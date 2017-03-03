@@ -8,19 +8,19 @@ describe('it should return true with a really really really really really really
 });
 
 
-describe('it should return woo', 'read', async() => {
-  return Promise.resolve('woo');
+describe('it should return a value', 'read', async() => {
+  return Promise.resolve('SUCCESS');
 });
 
 
-describe('it should return boo', 'yada', async() => {
-  return Promise.resolve('boo');
+describe('it should return another value', 'yada', async() => {
+  return Promise.resolve('SUCCESS');
 });
 
-describe('it should return false', async() => {
+describe('it should return an error after 3 seconds', async() => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      return reject(new Error('ELLIOT!'));
+      return reject(new Error('ERROR!'));
     }, 3000);
   });
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, ListView, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 
-import { run } from '~/tests';
+import { runSuite } from '~/tests';
 
 class Overview extends React.Component {
 
@@ -33,7 +33,7 @@ class Overview extends React.Component {
    *
    */
   componentDidMount() {
-    run('database');
+    runSuite('database');
   }
 
   /**
