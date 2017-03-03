@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { View, Text, AppState, NetInfo, StatusBar } from 'react-native';
+import { View, Text, AppState, NetInfo, StatusBar, Platform } from 'react-native';
 import { connect } from 'react-redux';
 
 import Navigator from '~/navigator';
@@ -21,7 +21,9 @@ class CoreContainer extends React.Component {
    * On app mount, listen for changes to app & network state
    */
   componentDidMount() {
-    StatusBar.setBackgroundColor('#0279ba');
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor('#0279ba');
+    }
     AppState.addEventListener('change', this.handleAppStateChange);
     NetInfo.isConnected.fetch().then((isConnected) => {
       this.handleAppStateChange('active'); // Force connect (react debugger issue)

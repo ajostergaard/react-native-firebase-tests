@@ -1,4 +1,4 @@
 import { AppRegistry } from 'react-native';
 import bootstrap from './src/main';
 
-AppRegistry.registerComponent('AccaTrackerWhiteLabel', () => bootstrap);
+AppRegistry.registerComponent('ReactNativeFirebaseDemo', () => bootstrap);
