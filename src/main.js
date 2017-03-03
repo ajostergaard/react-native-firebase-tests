@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 
 import CoreContainer from '~/containers/CoreContainer';
-import setup from '~/store/setup';
+import setupStore from '~/store/setup';
+import setupTests, { initialState } from '~/tests';
+
+global.Promise = require('bluebird');
 
 type State = {
   loading: boolean,
@@ -33,7 +36,8 @@ function bootstrap() {
     state: State;
 
     componentDidMount() {
-      setup((store) => {
+      setupStore(initialState(), (store) => {
+        setupTests(store);
         this.setState({
           store,
           loading: false,

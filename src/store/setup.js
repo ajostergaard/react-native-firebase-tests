@@ -7,7 +7,7 @@ import { persistStore, autoRehydrate } from 'redux-persist';
 import whitelist from './whitelist';
 import reducers from '../reducers';
 
-function setup(done) {
+function setup(initalState = {}, done) {
   const isDev = global.isDebuggingInChrome || __DEV__;
 
   const logger = reduxLogger({
@@ -27,7 +27,8 @@ function setup(done) {
     middlewares.push(applyMiddleware(...[logger]));
     middlewares.push(applyMiddleware(require('redux-immutable-state-invariant')()));
   }
-  const store = createStore(reducers, {}, compose(...middlewares));
+
+  const store = createStore(reducers, { ...initalState }, compose(...middlewares));
 
   // Attach the store to the Chrome debug window
   if (global.isDebuggingInChrome) {

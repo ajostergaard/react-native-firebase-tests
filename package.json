@@ -4,22 +4,25 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "run:android:dev": "react-native run-android",
-    "run:android:prod": "react-native run-android --configuration=release",
+    "android:dev": "react-native run-android",
+    "android:prod": "react-native run-android --configuration=release",
     "test": "jest"
   },
   "dependencies": {
+    "bluebird": "^3.4.7",
+    "deeps": "^1.4.4",
     "firebase": "^3.7.0",
+    "lodash.groupby": "^4.6.0",
     "react": "~15.4.1",
     "react-native": "0.42.0",
     "react-native-firebase": "0.0.2",
+    "react-native-vector-icons": "^4.0.0",
     "react-navigation": "^1.0.0-beta.6",
     "react-redux": "^5.0.3",
     "redux": "^3.6.0",
     "redux-logger": "^2.8.2",
     "redux-persist": "^4.4.2",
-    "redux-thunk": "^2.2.0",
-    "require-all": "^2.2.0"
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
