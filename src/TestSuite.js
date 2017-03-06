@@ -57,19 +57,18 @@ class BaseTest {
    * @private
    */
   _promiseToCb (promise, test, state) {
-    return promise(test, state).then(result => [null, result]).catch(error => [error]);
+    return promise.bind(null, [test, state]).then(result => null).catch(error => error);
   }
 
   /**
    * Try catch to object
-   * @param fn
    * @returns {{}}
    * @private
    */
-  _tryCatcher(fn) {
+  _tryCatcher(func) {
     const result = {};
     try {
-      result.value = fn();
+      result.value = func();
     } catch (e) {
       result.error = e;
     }
@@ -160,9 +159,16 @@ class BaseTest {
       .map(tests, async (test) => {
         dispatch(setTestStatus({ suite: this.id, description: test.description, status: START }));
         const testStart = Date.now();
+        let error = null;
 
         this._runLifecycle('beforeEach');
-        const [error] = await this._promiseToCb(test.func, test, this.reduxStore.getState());
+        let promiseOrRes = this._tryCatcher(test.func);
+
+        if (promiseOrRes.error) {
+          error = promiseOrRes.error.message;
+        } else {
+          error = await this._promiseToCb(promiseOrRes.value);
+        }
 
         // Update suite progress
         completedTests += 1;

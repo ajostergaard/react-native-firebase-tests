@@ -21,7 +21,7 @@ after(() => {
 });
 
 describe('it should return true with a really really really really really really really really really long description', 'read', async() => {
-  return Promise.resolve('SUCCESS');
+  console.log('this should pass')
 });
 
 

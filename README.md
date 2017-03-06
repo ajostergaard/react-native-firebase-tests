@@ -66,7 +66,22 @@ describe('test description', 'category', async (test, state) => {
 
 ### Running tests
 
-Tests can be run by rebooting the app, or manually within the app.
+Tests can be run by pressing the play button in the toolbar of the app. Test can be run individually, by suite, or all at once.
+
+### Lifecycle methods
+
+Four lifecycle methods are provided for each suite.
+
+```javascript
+const { before, beforeEach, afterEach, after } = MyNewSuite;
+
+before(() => console.log('Before all tests start.'});
+beforeEach(() => console.log('Before every test starts.'});
+afterEach(() => console.log('After each test starts.'});
+after(() => console.log('After all tests are complete, with success or error.'});
+```
+
+These can be asynchronous by returning a Promise.
 
 ## Misc
 
