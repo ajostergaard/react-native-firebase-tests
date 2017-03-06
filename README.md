@@ -50,15 +50,17 @@ This file now needs to be imported within `src/tests/index.js`.
 
 ### Adding new tests
 
-The `TestSuite` class provides a `describe` function, which will be used to run our asynchronous tests.
-The async function must return either a resolved or rejected promise when complete.
+The `TestSuite` class provides a `describe` function, which will be used to run our tests.
+Tests can be async is returned with a Promise.
 
 ```javascript
-describe('test description', 'category', async (test, state) => {
-  console.log('Current test: ', test);
-  console.log('Current state: ', state);
+describe('async successful test', 'category', async (test, state) => {
+  return new Promise((resolve, reject) => {
+    console.log('Current test: ', test);
+    console.log('Current state: ', state);
 
-  return Promise.reject(new Error('Some error occured'));
+    resolve();
+  });
 });
 ```
 
