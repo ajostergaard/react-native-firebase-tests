@@ -41,7 +41,7 @@ direcory within `src/tests`. Create an `index.js` file, containing the following
 import TestSuite from '~/TestSuite';
 
 const MyNewSuite = new TestSuite('Storage', 'Upload/Download storage tests');
-const { describe } = Suite;
+const { describe } = MyNewSuite;
 
 export default MyNewSuite;
 ```
@@ -54,8 +54,9 @@ The `TestSuite` class provides a `describe` function, which will be used to run 
 The async function must return either a resolved or rejected promise when complete.
 
 ```javascript
-describe('test description', 'category', async (test) => {
+describe('test description', 'category', async (test, state) => {
   console.log('Current test: ', test);
+  console.log('Current state: ', state);
 
   return Promise.reject(new Error('Some error occured'));
 });
