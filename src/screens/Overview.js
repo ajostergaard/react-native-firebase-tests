@@ -1,16 +1,38 @@
 import React from 'react';
 import { StyleSheet, View, Text, ListView, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
+import Toast from 'react-native-simple-toast';
 
-import { runSuite } from '~/tests';
+import { runAllSuites, runSuite } from '~/tests';
+import Icon from '~/components/Icon';
+import Banner from '~/components/Banner';
 
 class Overview extends React.Component {
 
   static navigationOptions = {
     title: 'Test Suites',
-    header: {
-      style: { backgroundColor: '#0288d1' },
-      tintColor: '#ffffff',
+    header: ({ state }) => {
+      const params = state.params || {};
+
+      return {
+        style: { backgroundColor: '#0288d1' },
+        tintColor: '#ffffff',
+        right: (
+          <View style={{ marginRight: 8 }}>
+            {!params.suitesRunning && (
+              <Icon
+                color={'#ffffff'}
+                size={28}
+                name="play circle filled"
+                onPress={() => {
+                  runAllSuites();
+                  Toast.show('Running all suite tests.');
+                }}
+              />
+            )}
+          </View>
+        ),
+      };
     },
   };
 
@@ -31,19 +53,16 @@ class Overview extends React.Component {
 
   /**
    *
-   */
-  componentDidMount() {
-    runSuite('database');
-  }
-
-  /**
-   *
    * @param nextProps
    */
   componentWillReceiveProps(nextProps) {
     this.setState({
       dataBlob: this.dataSource.cloneWithRows(nextProps.suites),
     });
+
+    if (this.props.running !== nextProps.running) {
+      this.props.navigation.setParams({ suitesRunning: nextProps.running });
+    }
   }
 
   /**
@@ -83,10 +102,22 @@ class Overview extends React.Component {
               numberOfLines={1}
             >
               {suite.description}
-              </Text>
+            </Text>
           </View>
           <View style={styles.statusContainer}>
-            <Text>{suite.status || 'paused'}</Text>
+            {suite.status === 'started' && (
+              <Icon
+                color={'rgba(0, 0, 0, 0.2)'}
+                name={'autorenew'}
+              />
+            )}
+            {suite.status === 'success' && <Icon name={'done'} />}
+            {suite.status === 'error' && (
+              <Icon
+                color={'#f44336'}
+                name={'clear'}
+              />
+            )}
           </View>
         </View>
       </TouchableHighlight>
@@ -115,6 +146,7 @@ class Overview extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        {this.props.running && <Banner type={'warning'}>Testing in progress!</Banner>}
         <ListView
           enableEmptySections
           dataSource={this.state.dataBlob}
@@ -127,6 +159,9 @@ class Overview extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  rightContainer: {
+    marginRight: 16,
+  },
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
@@ -160,6 +195,7 @@ const styles = StyleSheet.create({
 function select(state) {
   return {
     suites: state.tests.suites,
+    running: Object.values(state.tests.suites).filter(suite => suite.status === 'started').length > 0,
   };
 }
 

@@ -24,6 +24,9 @@ class CoreContainer extends React.Component {
     if (Platform.OS === 'android') {
       StatusBar.setBackgroundColor('#0279ba');
     }
+    if (Platform.OS === 'ios') {
+      StatusBar.setBarStyle('light-content')
+    }
     AppState.addEventListener('change', this.handleAppStateChange);
     NetInfo.isConnected.fetch().then((isConnected) => {
       this.handleAppStateChange('active'); // Force connect (react debugger issue)

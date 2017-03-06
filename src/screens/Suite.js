@@ -1,7 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, Text, ListView, TouchableHighlight, ProgressBarAndroid, Platform, Button } from 'react-native';
 import { connect } from 'react-redux';
+import { runSuite } from '~/tests';
 import groupBy from 'lodash.groupby';
+import Banner from '~/components/Banner';
+import Toast from 'react-native-simple-toast';
+import Icon from '~/components/Icon';
 
 class Suite extends React.Component {
 
@@ -9,9 +13,38 @@ class Suite extends React.Component {
     title: ({ state }) => {
       return state.params.suite.name;
     },
-    header: {
-      style: { backgroundColor: '#0288d1' },
-      tintColor: '#ffffff',
+    header: ({ state, setParams }) => {
+      return {
+        style: { backgroundColor: '#0288d1' },
+        tintColor: '#ffffff',
+        right: (
+          <View style={{ flexDirection: 'row', marginRight: 8 }}>
+            {state.params.status === 'error' && (
+              <Icon
+                color={state.params.errorToggle ? '#ffffff' : 'rgba(255, 255, 255, 0.54)'}
+                size={28}
+                name="error outline"
+                onPress={() => {
+                  setParams({
+                    errorToggle: !state.params.errorToggle,
+                  });
+                }}
+              />
+            )}
+            {state.params.status !== 'started' && (
+              <Icon
+                color={'#ffffff'}
+                size={28}
+                name="play circle filled"
+                onPress={() => {
+                  runSuite(state.params.suite.id);
+                  Toast.show(`Running ${state.params.suite.name} tests.`);
+                }}
+              />
+            )}
+          </View>
+        ),
+      };
     },
   };
 
@@ -27,6 +60,12 @@ class Suite extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.props.navigation.setParams({
+      running: this.props.suite.status === 'started',
+    });
+  }
+
   /**
    *
    * @param nextProps
@@ -35,37 +74,55 @@ class Suite extends React.Component {
     this.setState({
       dataBlob: this.dataSource.cloneWithRowsAndSections(nextProps.categories),
     });
+
+    if (this.props.suite.status !== nextProps.suite.status) {
+      this.props.navigation.setParams({
+        status: nextProps.suite.status,
+        running: !!nextProps.suite.status === 'started',
+      });
+    }
+
+    if (this.props.navigation.state.params.errorToggle !== nextProps.navigation.state.params.errorToggle) {
+      const errorsOnly = nextProps.navigation.state.params.errorToggle;
+
+      if (!errorsOnly) {
+        return this.setState({
+          dataBlob: this.dataSource.cloneWithRowsAndSections(nextProps.categories),
+        });
+      }
+
+      const response = {};
+
+      Object.keys(nextProps.categories).forEach((key) => {
+        nextProps.categories[key].forEach((test) => {
+          if (test.status === 'error') {
+            if (!response[key]) response[key] = [];
+            response[key].push(test);
+          }
+        });
+      });
+
+      this.setState({
+        dataBlob: this.dataSource.cloneWithRowsAndSections(response),
+      });
+    }
   }
 
+  /**
+   * Go a single test
+   * @param test
+   */
   goToTest(test) {
     const { navigate } = this.props.navigation;
-
     navigate('Test', { test });
   }
 
-  renderError() {
-    const { suite } = this.props;
-  console.log(suite)
-    return (
-      <View style={[styles.banner, styles.errorBanner]}>
-        <Text
-          numberOfLines={1}
-          style={styles.bannerText}
-        >
-          {suite.message}
-        </Text>
-      </View>
-    );
-  }
-
-  renderInProgress() {
-    return (
-      <View style={[styles.banner, styles.inProgress]}>
-        <Text style={styles.bannerText}>Tests in progress.</Text>
-      </View>
-    );
-  }
-
+  /**
+   * Render test group header
+   * @param data
+   * @param title
+   * @returns {XML}
+   */
   renderHeader(data, title) {
     return (
       <View
@@ -77,6 +134,14 @@ class Suite extends React.Component {
     )
   }
 
+  /**
+   * Render test row
+   * @param test
+   * @param sectionId
+   * @param rowId
+   * @param highlight
+   * @returns {XML}
+   */
   renderRow(test, sectionId, rowId, highlight) {
     return (
       <TouchableHighlight
@@ -89,7 +154,7 @@ class Suite extends React.Component {
       >
         <View style={[styles.row, test.status === 'error' ? styles.error : null]}>
           <View
-            style={[{ flex: 8 }, styles.rowContent]}
+            style={[{ flex: 9 }, styles.rowContent]}
           >
             <Text
               numberOfLines={2}
@@ -97,8 +162,20 @@ class Suite extends React.Component {
               {test.description}
             </Text>
           </View>
-          <View style={[{ flex: 2 }, styles.rowContent]}>
-            <Text>{test.status}</Text>
+          <View style={[{ flex: 1 }, styles.rowContent, [{ alignItems: 'center' }]]}>
+            {test.status === 'started' && (
+              <Icon
+                color={'rgba(0, 0, 0, 0.2)'}
+                name={'autorenew'}
+              />
+            )}
+            {test.status === 'success' && <Icon name={'done'} />}
+            {test.status === 'error' && (
+              <Icon
+                color={'#f44336'}
+                name={'clear'}
+              />
+            )}
           </View>
         </View>
       </TouchableHighlight>
@@ -120,13 +197,19 @@ class Suite extends React.Component {
     );
   }
 
+  /**
+   *
+   * @returns {XML}
+   */
   render() {
+    console.log(this.props.navigation)
     const { suite } = this.props;
 
     return (
       <View style={styles.container}>
-        {suite.status === 'started' && this.renderInProgress()}
-        {suite.status === 'error' && this.renderError()}
+        {suite.status === 'started' && <Banner type={'warning'}>{`Tests are currently running (${suite.progress}%).`}</Banner>}
+        {suite.status === 'success' && <Banner type={'success'}>{`Tests passed. (${suite.time}ms)`}</Banner>}
+        {suite.status === 'error' && <Banner type={'error'}>{`${suite.message} (${suite.time}ms)`}</Banner>}
         <ListView
           dataSource={this.state.dataBlob}
           renderSectionHeader={(...args) => this.renderHeader(...args)}

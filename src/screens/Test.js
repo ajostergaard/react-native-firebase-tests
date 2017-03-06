@@ -1,6 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Text, ListView, TouchableHighlight, ProgressBarAndroid, Platform } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import { connect } from 'react-redux';
+import Banner from '~/components/Banner';
+import Icon from '~/components/Icon';
+import { runTest } from '~/tests';
 
 class Test extends React.Component {
 
@@ -8,34 +12,35 @@ class Test extends React.Component {
     title: ({ state }) => {
       return state.params.test.description;
     },
-    header: {
-      style: { backgroundColor: '#0288d1' },
-      tintColor: '#ffffff',
+    header: ({ state }) => {
+      const params = state.params || { test: {} };
+
+      return {
+        style: { backgroundColor: '#0288d1' },
+        tintColor: '#ffffff',
+        right: (
+          <View style={{ marginRight: 8 }}>
+            {!state.params.running && (
+              <Icon
+                color={'#ffffff'}
+                size={28}
+                name="play circle filled"
+                onPress={() => {
+                  runTest(params.test.suite, params.test.category, params.test.description);
+                  Toast.show(`Running ${state.params.test.description}.`);
+                }}
+              />
+            )}
+          </View>
+        ),
+      };
     },
   };
 
-  renderInProgress() {
-    return (
-      <View style={[styles.banner, styles.inProgress]}>
-        <Text style={styles.bannerText}>Test is currently in progress.</Text>
-      </View>
-    );
-  }
-
-  renderSuccess() {
-    return (
-      <View style={[styles.banner, styles.success]}>
-        <Text style={styles.bannerText}>Test succeeded.</Text>
-      </View>
-    );
-  }
-
-  renderError() {
-    return (
-      <View style={[styles.banner, styles.error]}>
-        <Text style={styles.bannerText}>Test failed.</Text>
-      </View>
-    );
+  componentDidMount() {
+    this.props.navigation.setParams({
+      test: this.props.test,
+    });
   }
 
   render() {
@@ -43,10 +48,10 @@ class Test extends React.Component {
 
    return (
      <View style={styles.container}>
-       {test.status === 'started' && this.renderInProgress()}
-       {test.status === 'success' && this.renderSuccess()}
-       {test.status === 'error' && this.renderError()}
-       <View>
+       {test.status === 'started' && <Banner type={'warning'}>Test is currently running.</Banner>}
+       {test.status === 'success' && <Banner type={'success'}>{`Test passed. (${test.time}ms)`}</Banner>}
+       {test.status === 'error' && <Banner type={'error'}>{`Test failed. (${test.time}ms)`}</Banner>}
+       <View style={styles.content}>
          <Text>{test.message}</Text>
        </View>
      </View>
@@ -59,21 +64,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  banner: {
-    alignItems: 'center',
-    elevation: 3,
-  },
-  bannerText: {
-    color: '#ffffff',
-  },
-  inProgress: {
-    backgroundColor: '#FFC107',
-  },
-  success: {
-    backgroundColor: '#4CAF50',
-  },
-  error: {
-    backgroundColor: '#f44336',
+  content: {
+
   },
 });
 

@@ -22,7 +22,7 @@ function device(state: State = initialState, action: Object): State {
     };
   }
 
-  if (action.type === appTypes.APP_SET_STATE) {
+  if (action.type === appTypes.APP_SET_APP_STATE) {
     return {
       ...state,
       appState: action.appState,

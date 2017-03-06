@@ -9,3 +9,12 @@ export default StackNavigator({
   Suite: { screen: Suite },
   Test: { screen: Test },
 });
+
+export const initialNavState = {
+  index: 0,
+  routes: [
+    {
+      key: 'Overview',
+    },
+  ],
+};

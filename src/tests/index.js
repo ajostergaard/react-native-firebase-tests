@@ -25,6 +25,8 @@ export function initialState() {
       categories: Object.keys(test.tests),
       status: null,
       message: null,
+      time: 0,
+      progress: 0,
     };
 
     if (!descriptions[test.id]) descriptions[test.id] = {};
@@ -39,6 +41,7 @@ export function initialState() {
           category,
           status: null,
           message: null,
+          time: 0,
         };
       });
     });
@@ -61,18 +64,38 @@ export function setupSuites(store) {
 }
 
 /**
+ *
+ * @param suite
+ * @param category
+ * @param description
+ */
+export function runTest(suite, category, description) {
+  const testSuite = Object.values(tests).find(t => t.id === suite || '');
+  if (testSuite) {
+    testSuite.runTest(category, description);
+  } else {
+    console.error(`runSuite: The suite "${suite}" is not defined`);
+  }
+}
+
+/**
  * Run all tests in a suite
  * @param suite
  */
 export function runSuite(suite) {
-  tests[suite].run();
+  const testSuite = Object.values(tests).find(t => t.id === suite || '');
+  if (testSuite) {
+    testSuite.run();
+  } else {
+    console.error(`runSuite: The suite "${suite}" is not defined`);
+  }
 }
 
 /**
  * Run all tests
  */
 export function runAllSuites() {
-  Object.keys(tests).forEach((key) => {
-    runSuite(key);
+  Object.values(tests).forEach((suite) => {
+    suite.run();
   });
 }
