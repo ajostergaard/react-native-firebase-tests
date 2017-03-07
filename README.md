@@ -7,7 +7,7 @@ An **iOS** and **Android** React Native app built to test [`react-native-firebas
 
 1: Clone
 ```bash
-git clone git@github.com:invertase/react-native-firebase-tests.git
+git clone https://github.com/invertase/react-native-firebase-tests.git
 ```
 2: Install dependancies
 ```bash
