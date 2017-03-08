@@ -1,51 +1,36 @@
 import TestSuite from '~/TestSuite';
-
 const Suite = new TestSuite('Realtime Database', 'Read/Write database tests');
-console.log(Suite);
-const { before, after, beforeEach, afterEach, describe } = Suite;
+const { tryCatch, describe, firebase } = Suite;
 
-before(() => {
-  console.log('before hook');
-});
-
-beforeEach(() => {
-  console.log('beforeEach hook')
-});
-
-afterEach(() => {
-  console.log('afterEach hook')
-});
-
-after(() => {
-  console.log('after hook')
-});
-
-describe('it should return true with a really really really really really really really really really long description', 'read', async() => {
-  console.log('this should pass')
-});
-
-
-describe('it should return a value', 'read', async(test, state) => {
-  return Promise.resolve('SUCCESS');
-});
-
-
-describe('it should return another value', 'yada', async() => {
+describe('on: it should error if permission denied', 'Error Handling', () => {
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      return reject(new Error('ERROR!'));
-    }, 1500);
+    const successCb = tryCatch(() => {
+      reject(new Error('No permission denied error'));
+    }, reject);
+
+    const failureCb = tryCatch(error => {
+      error.message.includes('Permission denied').should.be.true();
+      resolve();
+    }, reject);
+
+    firebase.native.database().ref('nope').on('value', successCb, failureCb);
   });
 });
 
-describe('it should return an error after 3 seconds', async() => {
+describe('once: it should error if permission denied', 'Error Handling', () => {
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      return reject(new Error('ERROR!'));
-    }, 3000);
+    const successCb = tryCatch(() => {
+      reject(new Error('No permission denied error'));
+    }, reject);
+
+    const failureCb = tryCatch(error => {
+      error.message.includes('Permission denied').should.be.true();
+      resolve();
+    }, reject);
+
+    firebase.native.database().ref('nope').once('value', successCb, failureCb);
   });
 });
-
 
 export default Suite;
 
