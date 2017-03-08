@@ -1,8 +1,44 @@
 import { setSuiteStatus, setTestStatus } from '~/actions/TestActions';
+import firebase from '~/firebase';
 
 const START = 'started';
 const OK = 'success';
 const ERR = 'error';
+
+/**
+ * Make a promise callback-able to trap errors
+ * @param promise
+ * @param test
+ * @param state
+ * @private
+ */
+function _promiseToCb(promise) {
+  let returnValue = null;
+  try {
+    returnValue = Promise.resolve(promise)
+      .then(result => null, error => Promise.resolve(error))
+      .catch(error => Promise.resolve(error));
+  } catch (error) {
+    returnValue = Promise.resolve(error);
+  }
+  return returnValue;
+}
+
+
+/**
+ * Try catch to object
+ * @returns {{}}
+ * @private
+ */
+function _tryCatcher(func) {
+  const result = {};
+  try {
+    result.value = func();
+  } catch (e) {
+    result.error = e;
+  }
+  return result;
+}
 
 class BaseTest {
 
@@ -18,11 +54,7 @@ class BaseTest {
     this.description = description;
     this.tests = {};
     this.reduxStore = null;
-
-    this.firebase = {
-      web: '',
-      native: '',
-    };
+    this.firebase = firebase;
   }
 
   /**
@@ -49,31 +81,6 @@ class BaseTest {
     this.afterFunc = func;
   }
 
-  /**
-   * Make a promise callback-able to trap errors
-   * @param promise
-   * @param test
-   * @param state
-   * @private
-   */
-  _promiseToCb (promise, test, state) {
-    return promise.bind(null, [test, state]).then(result => null).catch(error => error);
-  }
-
-  /**
-   * Try catch to object
-   * @returns {{}}
-   * @private
-   */
-  _tryCatcher(func) {
-    const result = {};
-    try {
-      result.value = func();
-    } catch (e) {
-      result.error = e;
-    }
-    return result;
-  }
 
   /**
    * Describe a new test
@@ -112,9 +119,9 @@ class BaseTest {
    * @returns {Promise.<null>}
    * @private
    */
-  _runLifecycle = async (name) => {
+  _runLifecycle = async(name) => {
     if (this[`${name}Func`] && typeof this[`${name}Func`] === 'function') {
-      let promiseOrRes = this._tryCatcher(this[`${name}Func`]);
+      let promiseOrRes = _tryCatcher(this[`${name}Func`]);
       if (promiseOrRes.error) {
         console.error(`An error occurred during the "${this.name}" ${name} lifecycle method`, promiseOrRes.error.message);
         return null;
@@ -128,12 +135,27 @@ class BaseTest {
   };
 
   /**
+   * Try catch for callbacks - sends error to provided reject.
+   * @returns {{}}
+   * @private
+   */
+  tryCatch(cb, reject) {
+    return (...args) => {
+      try {
+        cb(...args);
+      } catch (error) {
+        reject(error);
+      }
+    }
+  }
+
+  /**
    *
    * @param tests
    * @returns {null}
    * @private
    */
-  _start = async (tests) => {
+  _start = async(tests) => {
     if (!this.reduxStore) {
       console.error(`Failed to run ${this.name} tests as no redux store has been provided`);
       return null;
@@ -156,18 +178,17 @@ class BaseTest {
     this._runLifecycle('before');
 
     return Promise
-      .map(tests, async (test) => {
+      .map(tests, async(test) => {
         dispatch(setTestStatus({ suite: this.id, description: test.description, status: START }));
         const testStart = Date.now();
         let error = null;
 
         this._runLifecycle('beforeEach');
-        let promiseOrRes = this._tryCatcher(test.func);
-
+        let promiseOrRes = _tryCatcher(test.func.bind(null, [test, this.reduxStore.getState()]));
         if (promiseOrRes.error) {
           error = promiseOrRes.error.message;
         } else {
-          error = await this._promiseToCb(promiseOrRes.value);
+          error = await _promiseToCb(promiseOrRes.value);
         }
 
         // Update suite progress
@@ -178,9 +199,19 @@ class BaseTest {
         }));
 
         if (error) {
-          dispatch(setTestStatus({ suite: this.id, description: test.description, status: ERR, message: error.message }));
+          dispatch(setTestStatus({
+            suite: this.id,
+            description: test.description,
+            status: ERR,
+            message: error.message
+          }));
         } else {
-          dispatch(setTestStatus({ suite: this.id, description: test.description, status: OK, time: Date.now() - testStart }));
+          dispatch(setTestStatus({
+            suite: this.id,
+            description: test.description,
+            status: OK,
+            time: Date.now() - testStart
+          }));
         }
 
         this._runLifecycle('afterEach');
