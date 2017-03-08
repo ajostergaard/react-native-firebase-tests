@@ -21,6 +21,9 @@ instances.web.database().ref('tests/types').set({
   boolean: true,
   string: 'foobar',
   number: 123567890,
+  object: {
+    foo: 'bar',
+  }
 });
 
 export default instances;
