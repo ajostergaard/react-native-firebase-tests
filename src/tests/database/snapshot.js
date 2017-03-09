@@ -72,15 +72,14 @@ export default function addTests({ tryCatch, describe, firebase }) {
       const successCb = tryCatch((snapshot) => {
         let total = 0;
         snapshot.forEach.should.be.a.Function();
-        snapshot.forEach((childSnapshot, i) => {
-          i.should.be.a.Number();
+        snapshot.forEach((childSnapshot) => {
           total = total + childSnapshot.val();
         });
         total.should.equal(45); // 45 = 0 to 9 added
         resolve();
       }, reject);
 
-      firebase.native.database().ref('tests/types/object/baz/daz').once('value', successCb, reject);
+      firebase.native.database().ref('tests/types/array').once('value', successCb, reject);
     });
   });
 
