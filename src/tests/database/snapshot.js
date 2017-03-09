@@ -67,6 +67,19 @@ export default function addTests({ tryCatch, describe, firebase }) {
     });
   });
 
+  describe('should provide a functioning getPriority() method', CATEGORY, () => {
+    return new Promise((resolve, reject) => {
+      const successCb = tryCatch((snapshot) => {
+        snapshot.getPriority.should.be.a.Function();
+        snapshot.getPriority().should.equal(666);
+        snapshot.val().should.eql({ foo: 'bar' });
+        resolve();
+      }, reject);
+
+      firebase.native.database().ref('tests/priority').once('value', successCb, reject);
+    });
+  });
+
   describe('should provide a functioning forEach() method', CATEGORY, () => {
     return new Promise((resolve, reject) => {
       const successCb = tryCatch((snapshot) => {

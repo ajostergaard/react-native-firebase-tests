@@ -20,7 +20,7 @@ const instances = {
 
 instances.web.database().ref('tests/types').set({
   array: [
-    0,1,2,3,4,5,6,7,8,9,
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
   ],
   boolean: true,
   string: 'foobar',
@@ -29,5 +29,9 @@ instances.web.database().ref('tests/types').set({
     foo: 'bar',
   }
 });
+
+instances.web.database().ref('tests/priority').setWithPriority({
+  foo: 'bar',
+}, 666);
 
 export default instances;
