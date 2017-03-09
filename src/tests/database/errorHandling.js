@@ -12,7 +12,7 @@ export default function addTests({ tryCatch, describe, firebase }) {
         resolve();
       }, reject);
 
-      firebase.native.database().ref('nope').on('value', successCb, failureCb).then(res => console.warn(JSON.stringify(res)));
+      firebase.native.database().ref('nope').on('value', successCb, failureCb);
     });
   });
 
