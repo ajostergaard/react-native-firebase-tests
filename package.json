@@ -8,6 +8,7 @@
     "android:prod": "react-native run-android --configuration=release",
     "ios:dev": "react-native run-ios",
     "ios:prod": "react-native run-ios --configuration=release",
+    "ios:pod:install": "cd ios && rm -rf ReactNativeFirebaseDemo.xcworkspace && pod install && cd ..",
     "test": "jest"
   },
   "dependencies": {
