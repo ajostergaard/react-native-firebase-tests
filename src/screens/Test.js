@@ -1,10 +1,20 @@
 import React from 'react';
-import { StyleSheet, View, Text, ListView, TouchableHighlight, ProgressBarAndroid, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ListView,
+  ScrollView,
+  TouchableHighlight,
+  ProgressBarAndroid,
+  Platform
+} from 'react-native';
 import Toast from 'react-native-simple-toast';
 import { connect } from 'react-redux';
 import Banner from '~/components/Banner';
 import Icon from '~/components/Icon';
 import { runTest } from '~/tests';
+import { js_beautify as beautify } from 'js-beautify';
 
 class Test extends React.Component {
 
@@ -46,16 +56,20 @@ class Test extends React.Component {
   render() {
     const { test } = this.props;
 
-   return (
-     <View style={styles.container}>
-       {test.status === 'started' && <Banner type={'warning'}>Test is currently running.</Banner>}
-       {test.status === 'success' && <Banner type={'success'}>{`Test passed. (${test.time}ms)`}</Banner>}
-       {test.status === 'error' && <Banner type={'error'}>{`Test failed. (${test.time}ms)`}</Banner>}
-       <View style={styles.content}>
-         <Text>{test.message}</Text>
-       </View>
-     </View>
-   );
+    return (
+      <View style={styles.container}>
+        {test.status === 'started' && <Banner type={'warning'}>Test is currently running.</Banner>}
+        {test.status === 'success' && <Banner type={'success'}>{`Test passed. (${test.time}ms)`}</Banner>}
+        {test.status === 'error' && <Banner type={'error'}>{`Test failed. (${test.time}ms)`}</Banner>}
+        <View style={styles.content}>
+          <Text>{test.message}</Text>
+          <Text style={styles.codeHeader}>Test Code Preview</Text>
+          <ScrollView>
+            <Text style={styles.code}>{beautify(test.func.toString(), { indent_size: 2 })}</Text>
+          </ScrollView>
+        </View>
+      </View>
+    );
   }
 }
 
@@ -64,9 +78,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  content: {
-
+  content: {},
+  code: {
+    backgroundColor: '#3F373A',
+    color: '#c3c3c3',
+    padding: 5,
+    fontSize: 16,
   },
+  codeHeader: {
+    fontWeight: '600',
+    fontSize: 18,
+    backgroundColor: '#000',
+    color: '#fff',
+    padding: 5,
+  }
 });
 
 function select(state, { navigation }) {

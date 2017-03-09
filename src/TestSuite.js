@@ -216,7 +216,7 @@ class BaseTest {
 
         this._runLifecycle('afterEach');
         return Promise.resolve(error);
-      })
+      }, { concurrency: 5 })
       .then((results) => {
         const errors = results.filter(Boolean);
 

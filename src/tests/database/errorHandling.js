@@ -8,11 +8,11 @@ export default function addTests({ tryCatch, describe, firebase }) {
       }, reject);
 
       const failureCb = tryCatch(error => {
-        error.message.includes('Permission denied').should.be.true();
+        error.message.includes('permission_denied').should.be.true();
         resolve();
       }, reject);
 
-      firebase.native.database().ref('nope').on('value', successCb, failureCb);
+      firebase.native.database().ref('nope').on('value', successCb, failureCb).then(res => console.warn(JSON.stringify(res)));
     });
   });
 
@@ -23,7 +23,7 @@ export default function addTests({ tryCatch, describe, firebase }) {
       }, reject);
 
       const failureCb = tryCatch(error => {
-        error.message.includes('Permission denied').should.be.true();
+        error.message.includes('permission_denied').should.be.true();
         resolve();
       }, reject);
 

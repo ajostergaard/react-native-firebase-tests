@@ -1,10 +1,12 @@
 import typeTests from './types';
+import snapshotTests from './snapshot';
 import TestSuite from '~/TestSuite';
 import errorHandlingTests from './errorHandling';
 
-const suite = new TestSuite('Realtime Database', 'firebase.database()');
+const suite = new TestSuite('Database', 'firebase.database()');
 
 // bootstrap tests
+snapshotTests(suite);
 typeTests(suite);
 errorHandlingTests(suite);
 

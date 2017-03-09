@@ -11,7 +11,11 @@ const config = {
 
 const instances = {
   web: firebase.initializeApp(config),
-  native: RNfirebase.initializeApp(),
+  native: RNfirebase.initializeApp({
+    debug: __DEV__ ? '*' : false,
+    errorOnMissingPlayServices: false,
+    persistence: true,
+  }),
 };
 
 instances.web.database().ref('tests/types').set({
