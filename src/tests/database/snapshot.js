@@ -73,9 +73,12 @@ export default function addTests({ tryCatch, describe, firebase }) {
         let total = 0;
         snapshot.forEach.should.be.a.Function();
         snapshot.forEach((childSnapshot) => {
-          total = total + childSnapshot.val();
+          const val = childSnapshot.val();
+          total = total + val;
+          return val === 3; // stop iteration after key 3
         });
-        total.should.equal(45); // 45 = 0 to 9 added
+
+        total.should.equal(6); // 0 + 1 + 2 + 3 = 6
         resolve();
       }, reject);
 
