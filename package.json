@@ -6,10 +6,13 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android:dev": "react-native run-android",
     "android:prod": "react-native run-android --configuration=release",
+    "ios:dev": "react-native run-ios",
+    "ios:prod": "react-native run-ios --configuration=release",
     "test": "jest"
   },
   "dependencies": {
     "bluebird": "^3.4.7",
+    "bows": "^1.6.0",
     "deeps": "^1.4.4",
     "firebase": "^3.7.0",
     "js-beautify": "^1.6.11",
