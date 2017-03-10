@@ -1,7 +1,9 @@
+import crash from './crash';
 import database from './database';
 import storage from './storage';
 
 const tests = {
+  crash,
   database,
   storage,
 };
