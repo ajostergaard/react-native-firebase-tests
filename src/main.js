@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import should from 'should';
 
-import CoreContainer from '~/containers/CoreContainer';
+import CoreContainer from './containers/CoreContainer';
 import setupStore from '~/store/setup';
 import { setupSuites } from '~/tests';
 

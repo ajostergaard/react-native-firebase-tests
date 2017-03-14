@@ -42,19 +42,20 @@ function _tryCatcher(func) {
 
 class BaseTest {
 
-  constructor(name, description) {
-    this.describe = this.describe.bind(this);
-    this.before = this.before.bind(this);
-    this.beforeEach = this.beforeEach.bind(this);
-    this.afterEach = this.afterEach.bind(this);
+  constructor(name, description, { concurrency }: Object = { concurrency: 10 }) {
     this.after = this.after.bind(this);
+    this.before = this.before.bind(this);
+    this.describe = this.describe.bind(this);
+    this.afterEach = this.afterEach.bind(this);
+    this.beforeEach = this.beforeEach.bind(this);
 
-    this.id = name.toLowerCase().replace(/\s/g, '-');
-    this.name = name;
-    this.description = description;
     this.tests = {};
+    this.name = name;
     this.reduxStore = null;
     this.firebase = firebase;
+    this.concurrency = concurrency;
+    this.description = description;
+    this.id = name.toLowerCase().replace(/\s/g, '-');
   }
 
   /**
@@ -216,7 +217,7 @@ class BaseTest {
 
         this._runLifecycle('afterEach');
         return Promise.resolve(error);
-      }, { concurrency: 5 })
+      }, { concurrency: this.concurrency })
       .then((results) => {
         const errors = results.filter(Boolean);
 

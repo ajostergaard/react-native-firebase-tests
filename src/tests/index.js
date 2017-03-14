@@ -2,8 +2,10 @@ import analytics from './analytics';
 import crash from './crash';
 import database from './database';
 import storage from './storage';
+import auth from './auth';
 
 const tests = {
+  auth,
   analytics,
   crash,
   database,
