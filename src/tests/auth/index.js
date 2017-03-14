@@ -6,7 +6,7 @@ const { tryCatch, describe, firebase, beforeEach } = suite;
 
 function randomString(length, chars) {
   let mask = '';
-  if (chars.indexOf('a') > -1) mask += 'abcdefghijklmnopqrstuvwxyz01234567890';
+  if (chars.indexOf('a') > -1) mask += 'abcdefghijklmnopqrstuvwxyz';
   if (chars.indexOf('A') > -1) mask += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   if (chars.indexOf('#') > -1) mask += '0123456789';
   if (chars.indexOf('!') > -1) mask += '~`!@#$%^&*()_+-={}[]:";\'<>?,./|\\';
@@ -39,8 +39,8 @@ describe('it should sign in with email and password', 'Email', () => {
     currentUser.should.be.an.Object();
     currentUser.uid.should.be.a.String();
     currentUser.toJSON().should.be.an.Object();
-    should.equal(currentUser.toJSON().email, null)
-    currentUser.isAnonymous.should.equal(true);
+    should.equal(currentUser.toJSON().email, 'test@test.com');
+    currentUser.isAnonymous.should.equal(false);
     currentUser.providerId.should.equal('firebase');
 
     firebase.native.auth().currentUser.uid.should.be.a.String();
@@ -54,28 +54,37 @@ describe('it should sign in with email and password', 'Email', () => {
 });
 
 
-describe('it should create a user with an email and password and delete after', 'Email', () => {
+describe('it should create a user with an email and password', 'Email', () => {
   const random = randomString(12, '#aA');
   const email = `${random}@${random}.com`;
   const pass = random;
 
-  return new Promise((resolve, reject) => {
-    const successCb = tryCatch((newUser) => {
-      newUser.uid.should.be.a.String();
-      newUser.email.should.equal(email.toLowerCase());
-      newUser.emailVerified.should.equal(false);
-      newUser.isAnonymous.should.equal(false);
-      newUser.providerId.should.equal('firebase');
-      firebase.native.auth().currentUser.delete().then(resolve).catch(reject);
-    }, reject);
+  const successCb = (newUser) => {
+    newUser.uid.should.be.a.String();
+    newUser.email.should.equal(email.toLowerCase());
+    newUser.emailVerified.should.equal(false);
+    newUser.isAnonymous.should.equal(false);
+    newUser.providerId.should.equal('firebase');
+  };
 
-    const failureCb = tryCatch(error => {
-      reject(error);
-    }, reject);
+  return firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb);
+});
 
+describe('it should delete a user', 'Misc', () => {
+  const random = randomString(12, '#aA');
+  const email = `${random}@${random}.com`;
+  const pass = random;
 
-    firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb).catch(failureCb);
-  });
+  const successCb = (newUser) => {
+    newUser.uid.should.be.a.String();
+    newUser.email.should.equal(email.toLowerCase());
+    newUser.emailVerified.should.equal(false);
+    newUser.isAnonymous.should.equal(false);
+    newUser.providerId.should.equal('firebase');
+    return firebase.native.auth().currentUser.delete();
+  };
+
+  return firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb);
 });
 
 describe('it should reject signOut if no currentUser', 'Misc', () => {
