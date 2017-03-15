@@ -29,9 +29,7 @@ describe('it should sign in anonymously', 'Anonymous', () => {
     return firebase.native.auth().signOut();
   };
 
-  return firebase.native.auth()
-    .signInAnonymously()
-    .then(successCb);
+  return firebase.native.auth().signInAnonymously().then(successCb);
 });
 
 describe('it should login with email and password', 'Email - Login', () => {
@@ -51,9 +49,7 @@ describe('it should login with email and password', 'Email - Login', () => {
     return firebase.native.auth().signOut();
   };
 
-  return firebase.native.auth()
-    .signInWithEmailAndPassword(email, pass)
-    .then(successCb);
+  return firebase.native.auth().signInWithEmailAndPassword(email, pass).then(successCb);
 });
 
 describe('it should error on login if user is disabled', 'Email - Login', () => {
@@ -186,7 +182,8 @@ describe('it should error on create if password weak', 'Email - Create', () => {
 
   const failureCb = (error) => {
     error.code.should.equal('auth/weak-password');
-    error.message.should.equal('The given password is invalid.');
+    // cannot test this message - it's different on the web client than ios/android return
+    // error.message.should.equal('The given password is invalid.');
     return Promise.resolve();
   };
 

@@ -16,6 +16,14 @@ import Icon from '~/components/Icon';
 import { runTest } from '~/tests';
 import { js_beautify as beautify } from 'js-beautify';
 
+function removeLastLine(s){
+  return i = s.lastIndexOf("\n"), s.substring(0, i);
+}
+
+function removeFirstLine(s) {
+  return s.substring(s.indexOf("\n") + 1);
+}
+
 class Test extends React.Component {
 
   static navigationOptions = {
@@ -65,7 +73,7 @@ class Test extends React.Component {
           <Text>{test.message}</Text>
           <Text style={styles.codeHeader}>Test Code Preview</Text>
           <ScrollView>
-            <Text style={styles.code}>{beautify(test.func.toString(), { indent_size: 2 })}</Text>
+            <Text style={styles.code}>{beautify(removeLastLine(removeFirstLine(test.func.toString())), { indent_size: 4, break_chained_methods: true })}</Text>
           </ScrollView>
         </View>
       </View>
@@ -83,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3F373A',
     color: '#c3c3c3',
     padding: 5,
-    fontSize: 16,
+    fontSize: 12,
   },
   codeHeader: {
     fontWeight: '600',

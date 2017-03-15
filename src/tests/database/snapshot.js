@@ -81,6 +81,7 @@ export default function addTests({ tryCatch, describe, firebase }) {
   });
 
   describe('should provide a functioning forEach() method', CATEGORY, () => {
+    // TODO this doesn't really test that the key order returned is in correct order
     return new Promise((resolve, reject) => {
       const successCb = tryCatch((snapshot) => {
         let total = 0;
