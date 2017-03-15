@@ -20,7 +20,7 @@ describe('it should sign in anonymously', 'Anonymous', () => {
     currentUser.should.be.an.Object();
     currentUser.uid.should.be.a.String();
     currentUser.toJSON().should.be.an.Object();
-    should.equal(currentUser.toJSON().email, null)
+    should.equal(currentUser.toJSON().email, null);
     currentUser.isAnonymous.should.equal(true);
     currentUser.providerId.should.equal('firebase');
 
@@ -34,7 +34,10 @@ describe('it should sign in anonymously', 'Anonymous', () => {
     .then(successCb);
 });
 
-describe('it should sign in with email and password', 'Email', () => {
+describe('it should login with email and password', 'Email - Login', () => {
+  const email = 'test@test.com';
+  const pass = 'test1234';
+
   const successCb = (currentUser) => {
     currentUser.should.be.an.Object();
     currentUser.uid.should.be.a.String();
@@ -49,12 +52,63 @@ describe('it should sign in with email and password', 'Email', () => {
   };
 
   return firebase.native.auth()
-    .signInWithEmailAndPassword('test@test.com', 'test1234')
+    .signInWithEmailAndPassword(email, pass)
     .then(successCb);
 });
 
+describe('it should error on login if user is disabled', 'Email - Login', () => {
+  const email = 'disabled@account.com';
+  const pass = 'test1234';
 
-describe('it should create a user with an email and password', 'Email', () => {
+  const successCb = () => {
+    return Promise.reject(new Error('Did not error.'))
+  };
+
+  const failureCb = (error) => {
+    error.code.should.equal('auth/user-disabled');
+    error.message.should.equal('The user account has been disabled by an administrator.');
+    return Promise.resolve();
+  };
+
+  return firebase.native.auth().signInWithEmailAndPassword(email, pass).then(successCb).catch(failureCb);
+});
+
+describe('it should error on login if password incorrect', 'Email - Login', () => {
+  const email = 'test@test.com';
+  const pass = 'test1234666';
+
+  const successCb = () => {
+    return Promise.reject(new Error('Did not error.'))
+  };
+
+  const failureCb = (error) => {
+    error.code.should.equal('auth/wrong-password');
+    error.message.should.equal('The password is invalid or the user does not have a password.');
+    return Promise.resolve();
+  };
+
+  return firebase.native.auth().signInWithEmailAndPassword(email, pass).then(successCb).catch(failureCb);
+});
+
+describe('it should error on login if user not found', 'Email - Login', () => {
+  const email = 'randomSomeone@fourOhFour.com';
+  const pass = 'test1234';
+
+  const successCb = () => {
+    return Promise.reject(new Error('Did not error.'))
+  };
+
+  const failureCb = (error) => {
+    error.code.should.equal('auth/user-not-found');
+    error.message.should.equal('There is no user record corresponding to this identifier. The user may have been deleted.');
+    return Promise.resolve();
+  };
+
+  return firebase.native.auth().signInWithEmailAndPassword(email, pass).then(successCb).catch(failureCb);
+});
+
+
+describe('it should create a user with an email and password', 'Email - Create', () => {
   const random = randomString(12, '#aA');
   const email = `${random}@${random}.com`;
   const pass = random;
@@ -85,6 +139,58 @@ describe('it should delete a user', 'Misc', () => {
   };
 
   return firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb);
+});
+
+describe('it should error on create with invalid email', 'Email - Create', () => {
+  const random = randomString(12, '#aA');
+  const email = `${random}${random}.com.boop.shoop`;
+  const pass = random;
+
+  const successCb = () => {
+    return Promise.reject(new Error('Did not error.'))
+  };
+
+  const failureCb = (error) => {
+    error.code.should.equal('auth/invalid-email');
+    error.message.should.equal('The email address is badly formatted.');
+    return Promise.resolve();
+  };
+
+  return firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb).catch(failureCb);
+});
+
+describe('it should error on create if email in use', 'Email - Create', () => {
+  const email = 'test@test.com';
+  const pass = 'test123456789';
+
+  const successCb = () => {
+    return Promise.reject(new Error('Did not error.'))
+  };
+
+  const failureCb = (error) => {
+    error.code.should.equal('auth/email-already-in-use');
+    error.message.should.equal('The email address is already in use by another account.');
+    return Promise.resolve();
+  };
+
+  return firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb).catch(failureCb);
+});
+
+describe('it should error on create if password weak', 'Email - Create', () => {
+  const email = 'testy@testy.com';
+  const pass = '123';
+
+  const successCb = () => {
+    return Promise.reject(new Error('Did not error.'))
+  };
+
+  const failureCb = (error) => {
+    error.code.should.equal('auth/weak-password');
+    error.message.should.equal('The given password is invalid.');
+    return Promise.resolve();
+  };
+
+  return firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb).catch(failureCb);
 });
 
 describe('it should reject signOut if no currentUser', 'Misc', () => {

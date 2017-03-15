@@ -1,12 +1,14 @@
 import analytics from './analytics';
 import crash from './crash';
 import database from './database';
+import messaging from './messaging';
 import storage from './storage';
 import auth from './auth';
 
 const tests = {
   auth,
   analytics,
+  messaging,
   crash,
   database,
   storage,
