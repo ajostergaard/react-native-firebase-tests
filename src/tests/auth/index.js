@@ -32,6 +32,75 @@ describe('it should sign in anonymously', 'Anonymous', () => {
   return firebase.native.auth().signInAnonymously().then(successCb);
 });
 
+describe('it should link anonymous account <-> email account', 'Link', () => {
+  const random = randomString(12, '#aA');
+  const email = `${random}@${random}.com`;
+  const pass = random;
+
+  const successCb = (currentUser) => {
+    currentUser.should.be.an.Object();
+    currentUser.uid.should.be.a.String();
+    currentUser.toJSON().should.be.an.Object();
+    should.equal(currentUser.toJSON().email, null);
+    currentUser.isAnonymous.should.equal(true);
+    currentUser.providerId.should.equal('firebase');
+    firebase.native.auth().currentUser.uid.should.be.a.String();
+
+    const credential = firebase.native.auth().EmailAuthProvider.credential(email, pass);
+
+    return currentUser
+      .link(credential)
+      .then((linkedUser) => {
+        linkedUser.should.be.an.Object();
+        linkedUser.uid.should.be.a.String();
+        linkedUser.toJSON().should.be.an.Object();
+        should.equal(linkedUser.toJSON().email, email);
+        linkedUser.isAnonymous.should.equal(false);
+        linkedUser.providerId.should.equal('firebase');
+        return firebase.native.auth().signOut();
+      }).catch((error) => {
+        return firebase.native.auth().signOut().then(() => {
+          return Promise.reject(error);
+        })
+      });
+  };
+
+  return firebase.native.auth().signInAnonymously().then(successCb);
+});
+
+describe('it should error on link anon <-> email if email already exists', 'Link', () => {
+  const email = 'test@test.com';
+  const pass = 'test1234';
+
+  const successCb = (currentUser) => {
+    currentUser.should.be.an.Object();
+    currentUser.uid.should.be.a.String();
+    currentUser.toJSON().should.be.an.Object();
+    should.equal(currentUser.toJSON().email, null);
+    currentUser.isAnonymous.should.equal(true);
+    currentUser.providerId.should.equal('firebase');
+    firebase.native.auth().currentUser.uid.should.be.a.String();
+
+    const credential = firebase.native.auth().EmailAuthProvider.credential(email, pass);
+
+    return currentUser
+      .link(credential)
+      .then(() => {
+        return firebase.native.auth().signOut().then(() => {
+          return Promise.reject(new Error('Did not error on link'));
+        })
+      }).catch((error) => {
+        return firebase.native.auth().signOut().then(() => {
+          error.code.should.equal('auth/email-already-in-use');
+          error.message.should.equal('The email address is already in use by another account.');
+          return Promise.resolve();
+        })
+      });
+  };
+
+  return firebase.native.auth().signInAnonymously().then(successCb);
+});
+
 describe('it should login with email and password', 'Email - Login', () => {
   const email = 'test@test.com';
   const pass = 'test1234';
