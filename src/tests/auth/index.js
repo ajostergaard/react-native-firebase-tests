@@ -206,6 +206,28 @@ describe('it should delete a user', 'Misc', () => {
   return firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb);
 });
 
+describe('it should return a token via getToken', 'Misc', () => {
+  const random = randomString(12, '#aA');
+  const email = `${random}@${random}.com`;
+  const pass = random;
+
+  const successCb = (newUser) => {
+    newUser.uid.should.be.a.String();
+    newUser.email.should.equal(email.toLowerCase());
+    newUser.emailVerified.should.equal(false);
+    newUser.isAnonymous.should.equal(false);
+    newUser.providerId.should.equal('firebase');
+    return newUser.getToken().then((token) => {
+      console.warn(token);
+      token.should.be.a.String();
+      should.equal(token.length > 24, true);
+      return firebase.native.auth().currentUser.delete();
+    })
+  };
+
+  return firebase.native.auth().createUserWithEmailAndPassword(email, pass).then(successCb);
+});
+
 describe('it should error on create with invalid email', 'Email - Create', () => {
   const random = randomString(12, '#aA');
   const email = `${random}${random}.com.boop.shoop`;
