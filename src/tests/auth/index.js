@@ -218,7 +218,6 @@ describe('it should return a token via getToken', 'Misc', () => {
     newUser.isAnonymous.should.equal(false);
     newUser.providerId.should.equal('firebase');
     return newUser.getToken().then((token) => {
-      console.warn(token);
       token.should.be.a.String();
       should.equal(token.length > 24, true);
       return firebase.native.auth().currentUser.delete();
