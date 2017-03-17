@@ -34,4 +34,7 @@ instances.web.database().ref('tests/priority').setWithPriority({
   foo: 'bar',
 }, 666);
 
+
+// instances.native.messaging().subscribeToTopic('fcm_test');
+
 export default instances;

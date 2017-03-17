@@ -16,36 +16,35 @@ describe('it should return fcm token from getToken', 'FCM', () => {
     .then(successCb);
 });
 
-
-describe('it should listen/unlisten for token refresh', 'FCM', () => {
+describe('it should create/remove onTokenRefresh listeners', 'FCM', () => {
   const cb = () => {
   };
-  firebase.native.messaging().listenForTokenRefresh(cb);
-  firebase.native.messaging().unlistenForTokenRefresh(cb);
+  try {
+    const listener = firebase.native.messaging().onTokenRefresh(cb);
+    listener.remove();
+  } catch (e) {
+    console.error(e);
+  }
+
   return Promise.resolve();
 });
 
 describe('it should subscribe/unsubscribe to topics', 'FCM', () => {
-  return firebase.native.messaging()
-    .subscribeToTopic('foobar')
-    .then(() => {
-      return firebase.native.messaging().unsubscribeFromTopic('foobar');
-    });
+  firebase.native.messaging().subscribeToTopic('foobar');
+  firebase.native.messaging().unsubscribeFromTopic('foobar');
+  return Promise.resolve();
 });
 
-describe('it should send upstream messages', 'FCM', () => {
-  // TODO - this does nothing on ios - its a stub function
-  return firebase.native.messaging()
-    .send({
-      id: 'randomId',
-      sender: `rnfirebase-b9ad4@gcm.googleapis.com`,
-      ttl: 604800, // 1 week
-      type: 'remote',
-      data: {
-        payload: JSON.stringify({ foo: 'bar' }),
-      },
-    });
-});
+describe('it should show a notification', 'FCM', () => {
+  firebase.messaging().createLocalNotification({
+    title: "Hello",
+    body: "My Notification Message",
+    big_text: "Is it me you're looking for?",
+    sub_text: "nope",
+    show_in_foreground: true
+  });
 
+  return Promise.resolve();
+});
 
 export default suite;
