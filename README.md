@@ -17,6 +17,10 @@ or
 ```
 yarn
 ```
+For iOS:
+```
+cd ios && pod install
+```
 3: Start RN packager
 ```bash
 npm run start
