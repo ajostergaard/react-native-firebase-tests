@@ -112,7 +112,7 @@ PODS:
   - React/RCTWebSocket (0.40.0):
     - React/Core
   - React/yoga (0.40.0)
-  - RNFirebase (1.0.0-alpha):
+  - RNFirebase (1.0.0-alpha4):
     - Firebase/Auth
     - Firebase/Core
     - Firebase/Database
@@ -149,9 +149,9 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   React:
-    :path: ../node_modules/react-native
+    :path: "../node_modules/react-native"
   RNFirebase:
-    :path: ../node_modules/react-native-firebase
+    :path: "../node_modules/react-native-firebase"
 
 SPEC CHECKSUMS:
   Firebase: 85a581fb04e44f63ae9f4fbc8d6dabf4a4c18653
@@ -170,7 +170,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 6f8d8b28b7e345549ac471071608170b31cb4977
   Protobuf: 745f59e122e5de98d4d7ef291e264a0eef80f58e
   React: 6dfb2f72edb1d74a800127ae157af038646673ce
-  RNFirebase: 137b6a8a80d8d8b89e990fc51b0f822298585109
+  RNFirebase: 1d44ee8838a12537fc03629cd5e90857b63b02d6
 
 PODFILE CHECKSUM: 23445e2727726988c7338fa2f396980d6fd3906f
 
