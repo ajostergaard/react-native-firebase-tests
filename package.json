@@ -9,8 +9,16 @@
     "ios:dev": "react-native run-ios",
     "ios:prod": "react-native run-ios --configuration=release",
     "ios:pod:install": "cd ios && rm -rf ReactNativeFirebaseDemo.xcworkspace && pod install && cd ..",
-    "test": "jest"
+    "test": "echo 'Tests should be run from within the RN application.\n\rSee https://github.com/invertase/react-native-firebase-tests#readme for more info.'"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/invertase/react-native-firebase-tests.git"
+  },
+  "bugs": {
+    "url": "https://github.com/invertase/react-native-firebase-tests/issues"
+  },
+  "homepage": "https://github.com/invertase/react-native-firebase-tests#readme",
   "dependencies": {
     "bluebird": "^3.4.7",
     "bows": "^1.6.0",
