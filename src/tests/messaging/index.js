@@ -36,7 +36,7 @@ describe('it should subscribe/unsubscribe to topics', 'FCM', () => {
 });
 
 describe('it should show a notification', 'FCM', () => {
-  firebase.messaging().createLocalNotification({
+  firebase.native.messaging().createLocalNotification({
     title: "Hello",
     body: "My Notification Message",
     big_text: "Is it me you're looking for?",
