@@ -6,11 +6,11 @@ import storage from './storage';
 import auth from './auth';
 
 const tests = {
+  database,
   auth,
   analytics,
   messaging,
   crash,
-  database,
   storage,
 };
 

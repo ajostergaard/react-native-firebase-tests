@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import RNfirebase from 'react-native-firebase';
 
-import databaseContents from './tests/support/databaseContents';
+import DatabaseContents from './tests/support/DatabaseContents';
 
 const config = {
   apiKey: "AIzaSyDnVqNhxU0Biit9nCo4RorAh5ulQQwko3E",
@@ -20,7 +20,7 @@ const instances = {
   }),
 };
 
-instances.web.database().ref('tests/types').set(databaseContents);
+instances.web.database().ref('tests/types').set(DatabaseContents.DEFAULT);
 
 instances.web.database().ref('tests/priority').setWithPriority({
   foo: 'bar',

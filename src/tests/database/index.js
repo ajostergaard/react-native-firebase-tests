@@ -1,14 +1,21 @@
-import typeTests from './types';
+import TestSuite from '../../TestSuite';
+
+/*
+  Test suite files
+ */
+
 import snapshotTests from './snapshot';
-import TestSuite from '~/TestSuite';
-import errorHandlingTests from './errorHandling';
+import refTestGroups from './ref/index';
 
 const suite = new TestSuite('Database', 'firebase.database()', { concurrency: 1 });
 
-// bootstrap tests
+/*
+  Register tests with test suite
+ */
+
+refTestGroups(suite);
+
 snapshotTests(suite);
-typeTests(suite);
-errorHandlingTests(suite);
 
 export default suite;
 

@@ -1,6 +1,7 @@
 const CATEGORY = 'Snapshot';
 
 export default function addTests({ tryCatch, describe, firebase }) {
+
   describe('should provide a functioning val() method', CATEGORY, () => {
     return new Promise((resolve, reject) => {
       const successCb = tryCatch((snapshot) => {
@@ -76,7 +77,8 @@ export default function addTests({ tryCatch, describe, firebase }) {
         resolve();
       }, reject);
 
-      firebase.native.database().ref('tests/priority').once('value', successCb, reject);
+      const ref = firebase.native.database().ref('tests/priority');
+      ref.once('value', successCb, reject);
     });
   });
 
