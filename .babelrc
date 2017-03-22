@@ -3,8 +3,14 @@
     "react-native"
   ],
   "plugins": [
-    ["babel-plugin-root-import", {
-      "rootPathSuffix": "src"
-    }]
+    [
+      "module-alias",
+      [
+        {
+          "src": "./src",
+          "expose": "~"
+        }
+      ]
+    ]
   ]
 }
