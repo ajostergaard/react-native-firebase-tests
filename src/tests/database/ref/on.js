@@ -3,9 +3,11 @@ import 'should-sinon';
 
 import DatabaseContents from '../../support/DatabaseContents';
 
-function onTests(category, { describe, firebase, tryCatch }) {
+const CATEGORY = 'ref.on';
 
-  describe('on: calls callback when value changes', category, function(){
+function onTests({ describe, firebase, tryCatch }) {
+
+  describe('on: calls callback when value changes', CATEGORY, function(){
 
     return Promise.all(
       Object.keys(DatabaseContents.DEFAULT).map(async function(dataRef) {
@@ -44,7 +46,7 @@ function onTests(category, { describe, firebase, tryCatch }) {
 
   });
 
-  describe('on: calls callback with current values', category, function(){
+  describe('on: calls callback with current values', CATEGORY, function(){
 
     return Promise.all(Object.keys(DatabaseContents.DEFAULT).map(async function(dataRef) {
       // Setup
@@ -72,7 +74,7 @@ function onTests(category, { describe, firebase, tryCatch }) {
     }));
   });
 
-  describe('on: errors if permission denied', category, () => {
+  describe('on: errors if permission denied', CATEGORY, () => {
     return new Promise((resolve, reject) => {
 
       const successCb = tryCatch(() => {

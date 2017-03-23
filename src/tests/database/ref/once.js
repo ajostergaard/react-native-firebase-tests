@@ -3,9 +3,11 @@ import 'should-sinon';
 
 import DatabaseContents from '../../support/DatabaseContents';
 
-function onceTests(category, { describe, firebase, tryCatch }) {
+const CATEGORY = 'ref.once';
 
-  describe('once: returns a promise', category, function(){
+function onceTests({ describe, firebase, tryCatch }) {
+
+  describe('once: returns a promise', CATEGORY, function(){
     // Setup
 
     const ref = firebase.native.database().ref('tests/types/number');
@@ -19,7 +21,7 @@ function onceTests(category, { describe, firebase, tryCatch }) {
     returnValue.should.be.Promise();
   });
 
-  describe('once: resolves with the correct value', category, async function(){
+  describe('once: resolves with the correct value', CATEGORY, async function(){
 
     await Promise.map(Object.keys(DatabaseContents.DEFAULT), function(dataRef) {
       // Setup
@@ -38,7 +40,7 @@ function onceTests(category, { describe, firebase, tryCatch }) {
     });
   });
 
-  describe('once: is NOT called when the value is changed', category, async function(){
+  describe('once: is NOT called when the value is changed', CATEGORY, async function(){
     // Setup
 
     const callback = sinon.spy();
@@ -54,7 +56,7 @@ function onceTests(category, { describe, firebase, tryCatch }) {
     callback.should.be.calledOnce();
   });
 
-  describe('once: errors if permission denied', category, () => {
+  describe('once: errors if permission denied', CATEGORY, () => {
     return new Promise((resolve, reject) => {
 
       const successCb = tryCatch(() => {

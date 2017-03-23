@@ -1,8 +1,10 @@
 import DatabaseContents from '../../support/DatabaseContents';
 
-function updateTests(category, { describe, firebase }) {
+const CATEGORY = 'ref.once';
 
-  describe('update: returns a promise', category, function(){
+function updateTests({ describe, firebase }) {
+
+  describe('update: returns a promise', CATEGORY, function(){
     // Setup
 
     let ref = firebase.native.database().ref('tests/types');
@@ -16,7 +18,7 @@ function updateTests(category, { describe, firebase }) {
     returnValue.should.be.Promise();
   });
 
-  describe('update: changes value', category, async function(){
+  describe('update: changes value', CATEGORY, async function(){
 
     await Promise.map(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
       // Setup
@@ -44,7 +46,7 @@ function updateTests(category, { describe, firebase }) {
 
   });
 
-  describe('update: can unset values', category, async function(){
+  describe('update: can unset values', CATEGORY, async function(){
 
     await Promise.map(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
       // Setup
@@ -71,7 +73,7 @@ function updateTests(category, { describe, firebase }) {
 
   });
 
-  describe('update: updates multiple values at once', category, async function(){
+  describe('update: updates multiple values at once', CATEGORY, async function(){
 
     // Setup
 

@@ -26,7 +26,7 @@ function registerTestSuite(testSuite) {
   });
 
   testGroups.forEach(function(testGroup) {
-    testGroup('ref', testSuite);
+    testGroup(testSuite);
   })
 }
 

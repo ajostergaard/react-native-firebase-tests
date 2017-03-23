@@ -3,9 +3,11 @@ import 'should-sinon';
 
 import DatabaseContents from '../../support/DatabaseContents';
 
-function offTests(category, { describe, firebase }) {
+const CATEGORY = 'ref.off';
 
-  describe('off: stops listening for changes', category, async function(){
+function offTests({ describe, firebase }) {
+
+  describe('off: stops listening for changes', CATEGORY, async function(){
 
     // Setup
 

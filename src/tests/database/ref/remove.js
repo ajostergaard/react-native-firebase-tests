@@ -1,8 +1,10 @@
 import DatabaseContents from '../../support/DatabaseContents';
 
-function removeTests(category, { describe, firebase }) {
+const CATEGORY = 'ref.remove';
 
-  describe('remove: returns a promise', category, function(){
+function removeTests({ describe, firebase }) {
+
+  describe('remove: returns a promise', CATEGORY, function(){
     // Setup
 
     let ref = firebase.native.database().ref('tests/types');
@@ -16,7 +18,7 @@ function removeTests(category, { describe, firebase }) {
     returnValue.should.be.Promise();
   });
 
-  describe('remove: sets value to null', category, async function(){
+  describe('remove: sets value to null', CATEGORY, async function(){
 
     await Promise.map(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
       // Setup
