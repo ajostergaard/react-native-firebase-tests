@@ -282,13 +282,6 @@ wml start
 wml stop
 ```
 
-## Misc
-
-### Imports
-
-Imports are managed by [babel-plugin-root-import](https://www.npmjs.com/package/babel-plugin-root-import), where the root
-is `src`.
-
 ## Troubleshooting
 
 ### Installing PodFiles
