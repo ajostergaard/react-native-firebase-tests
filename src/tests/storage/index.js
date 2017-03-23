@@ -1,7 +1,80 @@
 import TestSuite from '~/TestSuite';
+import should from 'should';
 
 const Suite = new TestSuite('Storage', 'Upload/Download storage tests');
-const { describe } = Suite;
+const { describe, firebase, tryCatch } = Suite;
+
+describe('it should error on download file if permission denied', 'Download', () => {
+  return new Promise((resolve, reject) => {
+    const successCb = tryCatch((meta) => {
+      reject(new Error('No permission denied error'));
+    }, reject);
+
+    const failureCb = tryCatch(error => {
+      error.code.should.equal('storage/unauthorized');
+      error.message.includes('not authorized').should.be.true();
+      resolve();
+    }, reject);
+
+    firebase.native.storage().ref('/not.jpg').downloadFile(firebase.native.storage.Native.DOCUMENT_DIRECTORY_PATH + '/not.jpg').then(successCb).catch(failureCb);
+  });
+});
+
+describe('it should download a file', 'Download', () => {
+  return new Promise((resolve, reject) => {
+    const successCb = tryCatch((meta) => {
+      should.equal(meta.state, firebase.native.storage.TaskState.SUCCESS);
+      should.equal(meta.bytesTransferred, meta.totalBytes);
+      resolve();
+    }, reject);
+
+    const failureCb = tryCatch(error => {
+      reject(error);
+    }, reject);
+
+    firebase.native.storage().ref('/ok.jpeg').downloadFile(firebase.native.storage.Native.DOCUMENT_DIRECTORY_PATH + '/ok.jpeg').then(successCb).catch(failureCb);
+  });
+});
+
+
+
+
+describe('it should error on upload if permission denied', 'Upload', () => {
+  return new Promise((resolve, reject) => {
+    const successCb = tryCatch((meta) => {
+      reject(new Error('No permission denied error'));
+    }, reject);
+
+    const failureCb = tryCatch(error => {
+      error.code.should.equal('storage/unauthorized');
+      error.message.includes('not authorized').should.be.true();
+      resolve();
+    }, reject);
+
+    firebase.native.storage().ref('/uploadNope.jpeg').putFile(firebase.native.storage.Native.DOCUMENT_DIRECTORY_PATH + '/ok.jpeg').then(successCb).catch(failureCb);
+  });
+});
+
+describe('it should upload a file', 'Upload', () => {
+  return new Promise((resolve, reject) => {
+    const successCb = tryCatch((uploadTaskSnapshot) => {
+      should.equal(uploadTaskSnapshot.state, firebase.native.storage.TaskState.SUCCESS);
+      should.equal(uploadTaskSnapshot.bytesTransferred, uploadTaskSnapshot.totalBytes);
+      uploadTaskSnapshot.metadata.should.be.an.Object();
+      uploadTaskSnapshot.downloadUrl.should.be.a.String();
+      resolve();
+    }, reject);
+
+    const failureCb = tryCatch(error => {
+      debugger;
+      reject(error);
+    }, reject);
+
+    firebase.native.storage().ref('/uploadOk.jpeg').putFile(firebase.native.storage.Native.DOCUMENT_DIRECTORY_PATH + '/ok.jpeg').then(successCb).catch(failureCb);
+  });
+});
+
+
 
 
 export default Suite;
