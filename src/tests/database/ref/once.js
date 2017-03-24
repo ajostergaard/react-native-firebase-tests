@@ -3,7 +3,7 @@ import 'should-sinon';
 
 import DatabaseContents from '../../support/DatabaseContents';
 
-const CATEGORY = 'ref.once';
+const CATEGORY = 'ref.once()';
 
 function onceTests({ describe, firebase, tryCatch }) {
 

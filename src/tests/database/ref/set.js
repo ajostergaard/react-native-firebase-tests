@@ -1,6 +1,6 @@
 import DatabaseContents from '../../support/DatabaseContents';
 
-const CATEGORY = 'ref.set';
+const CATEGORY = 'ref.set()';
 
 function setTests({ describe, firebase }) {
 

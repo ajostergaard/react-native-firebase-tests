@@ -1,12 +1,19 @@
-import on from './on';
-import off from './off';
-import once from './once';
-import set from './set';
-import update from './update';
-import remove from './remove';
+import onTests from './on';
+import offTests from './off';
+import onceTests from './once';
+import setTests from './set';
+import updateTests from './update';
+import removeTests from './remove';
+import pushTests from './push';
+import factoryTests from './factory';
+import keyTests from './key';
+import parentTests from './parent';
+import childTests from './child';
+import rootTests from './root';
 
 const testGroups = [
-  on, off, once, set, update, remove
+  factoryTests, keyTests, parentTests, childTests, rootTests,
+  pushTests, onTests, offTests, onceTests, setTests, updateTests, removeTests
 ];
 
 function registerTestSuite(testSuite) {

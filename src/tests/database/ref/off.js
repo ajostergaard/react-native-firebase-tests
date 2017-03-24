@@ -3,7 +3,7 @@ import 'should-sinon';
 
 import DatabaseContents from '../../support/DatabaseContents';
 
-const CATEGORY = 'ref.off';
+const CATEGORY = 'ref.off()';
 
 function offTests({ describe, firebase }) {
 

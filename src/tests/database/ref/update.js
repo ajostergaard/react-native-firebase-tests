@@ -1,6 +1,6 @@
 import DatabaseContents from '../../support/DatabaseContents';
 
-const CATEGORY = 'ref.once';
+const CATEGORY = 'ref.update()';
 
 function updateTests({ describe, firebase }) {
 

@@ -1,6 +1,6 @@
 import DatabaseContents from '../../support/DatabaseContents';
 
-const CATEGORY = 'ref.remove';
+const CATEGORY = 'ref.remove()';
 
 function removeTests({ describe, firebase }) {
 
