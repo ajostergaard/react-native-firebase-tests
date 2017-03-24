@@ -4,7 +4,7 @@ const CATEGORY = 'ref.remove()';
 
 function removeTests({ describe, firebase }) {
 
-  describe('remove: returns a promise', CATEGORY, function(){
+  describe('returns a promise', CATEGORY, function(){
     // Setup
 
     let ref = firebase.native.database().ref('tests/types');
@@ -18,7 +18,7 @@ function removeTests({ describe, firebase }) {
     returnValue.should.be.Promise();
   });
 
-  describe('remove: sets value to null', CATEGORY, async function(){
+  describe('sets value to null', CATEGORY, async function(){
 
     await Promise.map(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
       // Setup

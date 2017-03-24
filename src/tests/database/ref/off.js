@@ -7,7 +7,7 @@ const CATEGORY = 'ref.off()';
 
 function offTests({ describe, firebase }) {
 
-  describe('off: stops listening for changes', CATEGORY, async function(){
+  describe('stops listening for changes', CATEGORY, async function(){
 
     // Setup
 

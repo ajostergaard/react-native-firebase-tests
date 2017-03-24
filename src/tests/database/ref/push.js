@@ -7,7 +7,7 @@ const CATEGORY = 'ref.push()';
 
 function pushTests({ describe, firebase }) {
 
-  describe('push: returns a ref that can be used to set value later', CATEGORY, async function(){
+  describe('returns a ref that can be used to set value later', CATEGORY, async function(){
     // Setup
 
     const ref = firebase.native.database().ref('tests/types/array');
@@ -52,7 +52,7 @@ function pushTests({ describe, firebase }) {
 
   });
 
-  describe('push: allows setting value immediately', CATEGORY, async function(){
+  describe('allows setting value immediately', CATEGORY, async function(){
     // Setup
 
     const ref = firebase.native.database().ref('tests/types/array');
@@ -93,7 +93,7 @@ function pushTests({ describe, firebase }) {
 
   });
 
-  describe('push: calls an onComplete callback', CATEGORY, async function(){
+  describe('calls an onComplete callback', CATEGORY, async function(){
     // Setup
 
     const callback = sinon.spy();

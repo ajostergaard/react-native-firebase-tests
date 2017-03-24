@@ -7,7 +7,7 @@ const CATEGORY = 'ref.on()';
 
 function onTests({ describe, firebase, tryCatch }) {
 
-  describe('on: calls callback when value changes', CATEGORY, function(){
+  describe('calls callback when value changes', CATEGORY, function(){
 
     return Promise.all(
       Object.keys(DatabaseContents.DEFAULT).map(async function(dataRef) {
@@ -46,7 +46,7 @@ function onTests({ describe, firebase, tryCatch }) {
 
   });
 
-  describe('on: calls callback with current values', CATEGORY, function(){
+  describe('calls callback with current values', CATEGORY, function(){
 
     return Promise.all(Object.keys(DatabaseContents.DEFAULT).map(async function(dataRef) {
       // Setup
@@ -74,7 +74,7 @@ function onTests({ describe, firebase, tryCatch }) {
     }));
   });
 
-  describe('on: errors if permission denied', CATEGORY, () => {
+  describe('errors if permission denied', CATEGORY, () => {
     return new Promise((resolve, reject) => {
 
       const successCb = tryCatch(() => {

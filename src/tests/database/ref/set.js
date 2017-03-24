@@ -5,7 +5,7 @@ const CATEGORY = 'ref.set()';
 function setTests({ describe, firebase }) {
 
 
-  describe('set: returns a promise', CATEGORY, function(){
+  describe('returns a promise', CATEGORY, function(){
     // Setup
 
     let ref = firebase.native.database().ref('tests/types/number');
@@ -19,7 +19,7 @@ function setTests({ describe, firebase }) {
     returnValue.should.be.Promise();
   });
 
-  describe('set: changes value', CATEGORY, async function(){
+  describe('changes value', CATEGORY, async function(){
 
     await Promise.map(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
       // Setup
@@ -47,7 +47,7 @@ function setTests({ describe, firebase }) {
 
   });
 
-  describe('set: can unset values', CATEGORY, async function(){
+  describe('can unset values', CATEGORY, async function(){
 
     await Promise.map(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
       // Setup
