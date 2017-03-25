@@ -16,22 +16,25 @@ function onTests({ describe, firebase, tryCatch }) {
       const ref = firebase.native.database().ref(`tests/types/${dataRef}`);
       const currentDataValue = DatabaseContents.DEFAULT[dataRef];
 
-      const valueEvaluator = sinon.spy();
+      const callback = sinon.spy();
 
       // Test
 
-      await ref.on('value', function(snapshot) {
-        valueEvaluator(snapshot.val());
+      await new Promise(function(resolve){
+        ref.on('value', function(snapshot) {
+          callback(snapshot.val());
+          resolve();
+        });
       });
 
-      valueEvaluator.should.be.calledWith(currentDataValue);
+      callback.should.be.calledWith(currentDataValue);
 
       const newDataValue = DatabaseContents.NEW[dataRef];
       await ref.set(newDataValue);
 
       // Assertions
 
-      valueEvaluator.should.be.calledWith(newDataValue);
+      callback.should.be.calledWith(newDataValue);
 
       // Tear down
 
@@ -51,15 +54,18 @@ function onTests({ describe, firebase, tryCatch }) {
 
       // Test
 
-      return ref.on('value', function(snapshot) {
-        // Assertion
+      return new Promise(function(resolve){
+        ref.on('value', function(snapshot) {
+          // Assertion
 
-        snapshot.val().should.eql(dataTypeValue);
+          snapshot.val().should.eql(dataTypeValue);
 
-        // Tear down
+          // Tear down
 
-        ref.off();
-      });
+          ref.off();
+          resolve();
+        });
+      })
 
     });
   });
