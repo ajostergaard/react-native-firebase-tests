@@ -232,7 +232,7 @@ class TestSuite {
             suite: this.id,
             description: test.description,
             status: RUN_STATUS.ERR,
-            message: error.message
+            message: `${error.name}: ${error.message}`
           }));
 
         } else {
