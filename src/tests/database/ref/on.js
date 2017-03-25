@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import 'should-sinon';
+import Promise from 'bluebird';
 
 import DatabaseContents from '../../support/DatabaseContents';
 
@@ -9,72 +10,61 @@ function onTests({ describe, firebase, tryCatch }) {
 
   describe('calls callback when value changes', CATEGORY, function(){
 
-    return Promise.all(
-      Object.keys(DatabaseContents.DEFAULT).map(async function(dataRef) {
-        // Setup
+    return Promise.each( Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
+      // Setup
 
-        const ref = firebase.native.database().ref(`tests/types/${dataRef}`);
-        const currentDataValue = DatabaseContents.DEFAULT[dataRef];
+      const ref = firebase.native.database().ref(`tests/types/${dataRef}`);
+      const currentDataValue = DatabaseContents.DEFAULT[dataRef];
 
-        const valueEvaluator = sinon.spy();
+      const valueEvaluator = sinon.spy();
 
-        // Test
+      // Test
 
-        await new Promise(function(resolve){
+      await ref.on('value', function(snapshot) {
+        valueEvaluator(snapshot.val());
+      });
 
-          ref.on('value', function(snapshot) {
-            valueEvaluator(snapshot.val());
-            resolve();
-          });
+      valueEvaluator.should.be.calledWith(currentDataValue);
 
-        });
+      const newDataValue = DatabaseContents.NEW[dataRef];
+      await ref.set(newDataValue);
 
-        valueEvaluator.should.be.calledWith(currentDataValue);
+      // Assertions
 
-        const newDataValue = DatabaseContents.NEW[dataRef];
-        await ref.set(newDataValue);
+      valueEvaluator.should.be.calledWith(newDataValue);
 
-        // Assertions
+      // Tear down
 
-        valueEvaluator.should.be.calledWith(newDataValue);
-
-        // Tear down
-
-        ref.off();
-      })
-    );
+      ref.off();
+    }
+  );
 
   });
 
   describe('calls callback with current values', CATEGORY, function(){
 
-    return Promise.all(Object.keys(DatabaseContents.DEFAULT).map(async function(dataRef) {
+    return Promise.each(Object.keys(DatabaseContents.DEFAULT), function(dataRef) {
       // Setup
 
       const dataTypeValue = DatabaseContents.DEFAULT[dataRef];
+      const ref = firebase.native.database().ref(`tests/types/${dataRef}`);
 
-      await new Promise(function(resolve){
-        const ref = firebase.native.database().ref(`tests/types/${dataRef}`);
+      // Test
 
-        // Test
+      return ref.on('value', function(snapshot) {
+        // Assertion
 
-        ref.on('value', function(snapshot) {
-          // Assertion
+        snapshot.val().should.eql(dataTypeValue);
 
-          snapshot.val().should.eql(dataTypeValue);
+        // Tear down
 
-          // Tear down
-
-          ref.off();
-
-          resolve();
-        });
+        ref.off();
       });
 
-    }));
+    });
   });
 
-  describe('errors if permission denied', CATEGORY, () => {
+  describe('errors if permission denied', CATEGORY, function(){
     return new Promise((resolve, reject) => {
 
       const successCb = tryCatch(() => {

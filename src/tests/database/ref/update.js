@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import DatabaseContents from '../../support/DatabaseContents';
 
 const CATEGORY = 'ref.update()';
@@ -18,9 +19,9 @@ function updateTests({ describe, firebase }) {
     returnValue.should.be.Promise();
   });
 
-  describe('changes value', CATEGORY, async function(){
+  describe('changes value', CATEGORY, function(){
 
-    await Promise.map(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
+    return Promise.each(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
       // Setup
 
       const previousValue = DatabaseContents.DEFAULT[dataRef];
@@ -46,9 +47,9 @@ function updateTests({ describe, firebase }) {
 
   });
 
-  describe('can unset values', CATEGORY, async function(){
+  describe('can unset values', CATEGORY, function(){
 
-    await Promise.map(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
+    return Promise.each(Object.keys(DatabaseContents.DEFAULT), async function(dataRef) {
       // Setup
 
       const previousValue = DatabaseContents.DEFAULT[dataRef];

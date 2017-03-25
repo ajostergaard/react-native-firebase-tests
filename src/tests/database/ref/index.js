@@ -11,6 +11,8 @@ import parentTests from './parent';
 import childTests from './child';
 import rootTests from './root';
 
+import DatabaseContents from '../../support/DatabaseContents';
+
 const testGroups = [
   factoryTests, keyTests, parentTests, childTests, rootTests,
   pushTests, onTests, offTests, onceTests, setTests, updateTests, removeTests
@@ -20,16 +22,12 @@ function registerTestSuite(testSuite) {
   testSuite.beforeEach(async function(){
     this._databaseRef = testSuite.firebase.native.database().ref('tests/types');
 
-    await new Promise((resolve) => {
-      this._databaseRef.once('value', (snapshot) => {
-        this._databaseContentsBefore = snapshot.val();
-      })
-    })
+    await this._databaseRef.set(DatabaseContents.DEFAULT)
 
   });
 
   testSuite.afterEach(async function(){
-    await this._databaseRef.set(this._databaseContentsBefore);
+    await this._databaseRef.set(DatabaseContents.DEFAULT)
   });
 
   testGroups.forEach(function(testGroup) {
