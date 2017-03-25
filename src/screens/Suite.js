@@ -202,14 +202,13 @@ class Suite extends React.Component {
    * @returns {XML}
    */
   render() {
-    console.log(this.props.navigation)
-    const { suite } = this.props;
+    console.log(this.props.navigation);
 
     return (
       <View style={styles.container}>
-        {suite.status === 'started' && <Banner type={'warning'}>{`Tests are currently running (${suite.progress}%).`}</Banner>}
-        {suite.status === 'success' && <Banner type={'success'}>{`Tests passed. (${suite.time}ms)`}</Banner>}
-        {suite.status === 'error' && <Banner type={'error'}>{`${suite.message} (${suite.time}ms)`}</Banner>}
+
+        { this.renderStatusMessage() }
+
         <ListView
           dataSource={this.state.dataBlob}
           renderSectionHeader={(...args) => this.renderHeader(...args)}
@@ -219,6 +218,40 @@ class Suite extends React.Component {
       </View>
     );
   }
+
+  renderStatusMessage(){
+    const { suite: { status, progress, time, message } } = this.props;
+
+    switch(status){
+      case 'started':
+
+        return(
+          <Banner type={'warning'}>
+            Tests are currently running ({ progress.toFixed(2) }%).
+          </Banner>
+        );
+
+      case 'success':
+
+        return(
+          <Banner type={'success'}>
+            Tests passed. ({ time }ms)
+          </Banner>
+        );
+
+      case 'error':
+
+        return(
+          <Banner type={'error'}>
+            {message} ({time}ms)
+          </Banner>
+        );
+
+      default:
+        return null;
+    }
+  }
+
 }
 
 const styles = StyleSheet.create({
